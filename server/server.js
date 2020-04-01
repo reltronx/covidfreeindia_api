@@ -12,7 +12,7 @@ const routes = require('./routes')
 
 //path is used to go back a directory neatly by __dirname , '../public'
 const path = require('path')
-const publicPath = path.join(__dirname, '../build')
+const publicPath = path.join(__dirname, '../public')
 
 const mongo_uri = constants.mongoURL
 mongoose.connect(mongo_uri, function(err) {
