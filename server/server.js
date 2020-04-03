@@ -5,11 +5,10 @@ let bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const socketHandler = require('./socketHandler/socket')
-
+var cors = require('cors');
 //My own Modules
 let constants = require('./constants')
 const routes = require('./routes')
-
 //path is used to go back a directory neatly by __dirname , '../public'
 const path = require('path')
 const publicPath = path.join(__dirname, '../public')
@@ -23,8 +22,18 @@ mongoose.connect(mongo_uri, function(err) {
   }
 })
 
-const port = process.env.PORT || 3000
-
+const port = process.env.PORT || 4000
+const whitelist = ['https://covidfreeindia.herokuapp.com', 'http://localhost:3001', 'http://localhost:3000']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+app.use(cors(whitelist));
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())

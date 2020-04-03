@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const PatientSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
+  province: { type: String, required: true },
+  phone: { type: String, required: true },
   password: { type: String, required: true }
 });
 
@@ -11,7 +13,7 @@ PatientSchema.methods.isCorrectPassword = function(password, callback){
   bcrypt.compare(password, this.password, function(err, same) {
     if (err) {
       callback(err);
-    } else {
+    } else { 
       callback(err, same);
     }
   });
