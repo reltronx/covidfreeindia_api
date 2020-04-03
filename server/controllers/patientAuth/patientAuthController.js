@@ -1,13 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 const Patient = require('../../models/Patient.js');
-const Doctor = require('../../models/Doctor.js');
 
 module.exports = {
-	login: (req, res) => {
+	patientLogin: (req, res) => {
 		const { email, password } = req.body;
 		Patient.findOne({ email }, function(err, patient) {
-      console.log("dkbaskbaskdbksdja",err,patient)
 			if (err) {
 				console.error(err);
 				res.status(500).json({
@@ -16,11 +14,10 @@ module.exports = {
 			} else if (!patient) {
 				res.status(401).json({
 					error: 'Incorrect email or password'
-        });
-      }
-	 else {
+				});
+			} else {
 				patient.isCorrectPassword(password, function(err, same) {
-          console.log("bcrypting pass",same)
+					console.log('bcrypting pass', same);
 					if (err) {
 						res.status(500).json({
 							error: 'Internal error please try again'
@@ -29,23 +26,21 @@ module.exports = {
 						res.status(401).json({
 							error: 'Incorrect email or password'
 						});
-          }
-          else {
+					} else {
 						// Issue token
 						const payload = { email };
-						const secret = 'COVID';
+						const secret = process.env.JWT_SECRET;
 						const token = jwt.sign(payload, secret, {
 							expiresIn: '1h'
 						});
 						// res.cookie('token', token, { httpOnly: true }).sendStatus(200)
 						res.status(200).json({ message: 'success', token });
 					}
-        })
-      } 
-          
+				});
+			}
 		});
 	},
-	register: (req, res) => {
+	patientSignup: (req, res) => {
 		console.log('register is hit', req.body);
 		const { email, province, phone, password } = req.body;
 		// console.log("data",email,province,phone,password)
@@ -64,10 +59,9 @@ module.exports = {
 			} else
 				newPatient.save(function(err, user) {
 					if (err) {
-						console.log(err, 'dfsdsdfsdffdssf');
 						res.status(500).send('Error registering new patient please try again.');
 					} else {
-						res.status(200).json({ user});
+						res.status(200).json({ user });
 					}
 				});
 		});

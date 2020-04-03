@@ -5,15 +5,16 @@ let bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const socketHandler = require('./socketHandler/socket')
+require('dotenv').config()
 var cors = require('cors');
 //My own Modules
 let constants = require('./constants')
-const routes = require('./routes')
+const patientRoutes = require('./patientRoutes')
 //path is used to go back a directory neatly by __dirname , '../public'
 const path = require('path')
 const publicPath = path.join(__dirname, '../public')
-
-const mongo_uri = constants.mongoURL
+console.log(process.env,"printing out env variables")
+const mongo_uri = process.env.MONGO_URL
 mongoose.connect(mongo_uri, function(err) {
   if (err) {
     throw err
@@ -52,7 +53,7 @@ app.use(express.static(publicPath))
 // });
 
 //redirect routes modules
-app.use('/api', routes)
+app.use('/api/patient', patientRoutes)
 
 server.listen(port, err => {
   if (err) return console.log(err)
